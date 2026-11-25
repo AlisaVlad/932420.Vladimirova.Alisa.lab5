@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadState() {
         const savedHTML = localStorage.getItem('ecoHabitsHTML');
-        if (savedHTML) {
+        if (savedHTML !== null) {
             habitsContainer.innerHTML = savedHTML;
         }
 
@@ -116,17 +116,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    addHabitBtn.addEventListener('click', () => {
-        const habitName = newHabitInput.value.trim();
-        if (!habitName) {
-            alert("Пожалуйста, введите название привычки!");
-            return;
-        }
+    if (addHabitBtn && newHabitInput) {
+        addHabitBtn.addEventListener('click', () => {
+            const habitName = newHabitInput.value.trim();
+            if (!habitName) {
+                alert("Пожалуйста, введите название привычки!");
+                return;
+            }
 
-        const newCard = document.createElement('article');
-        newCard.className = 'eco-card';
+            const newCard = document.createElement('article');
+            newCard.className = 'eco-card';
 
-        newCard.innerHTML = `
+            newCard.innerHTML = `
             <h3>${habitName}</h3>
             <p>Новая полезная привычка</p>
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -136,40 +137,47 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="delete-btn">Удалить</button>
         `;
 
-        habitsContainer.appendChild(newCard);
+            habitsContainer.appendChild(newCard);
 
-        newHabitInput.value = '';
+            newHabitInput.value = '';
 
-        attachMarkButtons();
-        attachDeleteButtons();
-        saveState();
-    });
-
-    resetBtn.addEventListener('click', () => {
-        const allProgressBars = document.querySelectorAll('.progress');
-        const allProgressContainers = document.querySelectorAll('.progress-bar');
-
-        allProgressBars.forEach(bar => {
-            bar.style.width = '0%';
-            bar.textContent = '0%';
+            attachMarkButtons();
+            attachDeleteButtons();
+            saveState();
         });
+    }
 
-        allProgressContainers.forEach(container => {
-            container.setAttribute('aria-valuenow', '0');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            const allProgressBars = document.querySelectorAll('.progress');
+            const allProgressContainers = document.querySelectorAll('.progress-bar');
+
+            allProgressBars.forEach(bar => {
+                bar.style.width = '0%';
+                bar.textContent = '0%';
+            });
+
+            allProgressContainers.forEach(container => {
+                container.setAttribute('aria-valuenow', '0');
+            });
+
+            saveState();
         });
+    }
 
-        saveState();
-    });
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            saveState();
+        });
+    }
 
-    themeBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-        saveState();
-    });
-
-    hideBtn.addEventListener('click', () => {
-        habitsContainer.classList.toggle('hidden');
-        saveState();
-    });
+    if (hideBtn) {
+        hideBtn.addEventListener('click', () => {
+            habitsContainer.classList.toggle('hidden');
+            saveState();
+        });
+    }
 
     loadState();
 });
